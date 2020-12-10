@@ -1,0 +1,11 @@
+WorldPopulation=read.csv("data-raw/jhu-worldpop.csv")
+USArea=read.csv("data-raw/census-state-area.csv")
+G20=read.csv("data-raw/G20.csv")
+USPopulation=read.csv("data-raw/jhu-statepop.csv")
+WorldArea=read.csv("data-raw/jhu-worldarea.csv")
+
+use_data(WorldPopulation)
+use_data(USArea)
+use_data(G20)
+use_data(USPopulation)
+use_data(WorldArea)
