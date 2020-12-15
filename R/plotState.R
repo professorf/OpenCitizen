@@ -19,18 +19,20 @@ plotState = function (dfd, State, DataType, dfa=NULL) {
     #lines(XBarPlot[4:(length(StateVals)-3)], Avg4, col=Colors[1])
 
     #
-    # Do any annotations (TO DO: Fix Crash if Dates out of range)
+    # Do any annotations
     #
     if (!is.null(dfa)) {
       Dates=as.Date(names(dfd[2:length(names(dfd))]), format="X%m.%d.%y")
       AnnotateDate  = dfa$AnnotateDate
       AnnotateLabel = dfa$AnnotateLabel
       YVal=StateInfo$MaxDayVal
-      XRow=sapply(AnnotateDate, function(x) { which(Dates==x) })
-      XVal=StateInfo$XBarPlot[XRow]
-      for (i in 1:length(XVal)) {
-        lines(c(XVal[i], XVal[i]), c(0,YVal), col="pink", lty=3)
-        text(XVal[i], YVal, AnnotateLabel[i], pos=1, col="gray") # 1 is below
+      XDat=sapply(AnnotateDate, function(x) { which(Dates==x) })
+      for (i in 1:length(XDat)) {
+        if (length(XDat[i])!=0) {
+          XVal=StateInfo$XBarPlot[as.numeric(XDat[i])]
+          lines(c(XVal, XVal), c(0,YVal), col="pink", lty=3)
+          text(XVal, YVal, AnnotateLabel[i], pos=1, col="gray") # 1 is below
+        }
       }
     }
     #
@@ -84,6 +86,7 @@ plotState = function (dfd, State, DataType, dfa=NULL) {
       G=bitwShiftR(bitwAnd(iColor,0x00ff00), 8); G=G+Lighten; G=ifelse(G>255, 255, G)
       B=bitwAnd(iColor, 0x0000ff)              ; B=B+Lighten; B=ifelse(B>255, 255, B)
       LiteColor=sprintf("#%x%x%x", R, G, B)
+      # Plot
       if (i==1) {
         plot(as.numeric(ValueMatrix[i,]) , typ="p", col=LiteColor, xaxt="n", main=sprintf("COVID-19 Daily %s: %s", toupper(DataType), paste(MultipleStates, collapse="; ")), xlab=sprintf("Days (0 = %s; Current Day:%s = %s)", Day1, length(colnames(ValueMatrix)), DayN), ylab=DataType, ylim=c(0,MaxValue),lwd=3)
         axis(1, at=1:length(ValueMatrix), las=2, labels=DateLabels, cex.axis=0.5)
@@ -94,7 +97,7 @@ plotState = function (dfd, State, DataType, dfa=NULL) {
     }
     legend(0, MaxValue-1, legend=MultipleStates, col=Palette[1:nrow(ValueMatrix)], lty=1, lwd=3)
     #
-    # Do any annotations (TO DO: Fix Crash if Dates out of range)
+    # Do any annotations
     #
     if (!is.null(dfa)) {
       Dates=as.Date(names(dfd[2:length(names(dfd))]), format="X%m.%d.%y")
@@ -103,8 +106,10 @@ plotState = function (dfd, State, DataType, dfa=NULL) {
       YVal=MaxValue
       XVal=sapply(AnnotateDate, function(x) { which(Dates==x) })
       for (i in 1:length(XVal)) {
-        lines(c(XVal[i], XVal[i]), c(0,YVal), col="pink", lty=3)
-        text(XVal[i], YVal, AnnotateLabel[i], pos=1, col="gray") # 1 is below
+        if (length(XVal[i])!=0) { # If annotation date falls in plot range
+          lines(c(XVal[i], XVal[i]), c(0,YVal), col="pink", lty=3)
+          text(XVal[i], YVal, AnnotateLabel[i], pos=1, col="gray") # 1 is below
+        }
       }
     }
 
