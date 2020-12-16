@@ -1,4 +1,4 @@
-summarizeState = function (dfd, State) {
+summarizeState = function (dfd, State, Region="US") {
   Row=which (dfd$State==State)
   #
   # Determine date columns
@@ -24,12 +24,14 @@ summarizeState = function (dfd, State) {
   iMaxDay=which(StateVals==max(StateVals))[1] # [1] in case duplicate max days, take 1st
   MaxDayVal=StateVals[iMaxDay]
   MaxDate=names(StateVals)[iMaxDay]
-  StatePopulation=USPopulation$Population[which(USPopulation$State==State)]
-  StateRow=which(USArea$State==State)
-  if (identical(StateRow, integer(0))==T) {
-    StateArea=1
+  if (tolower(Region)=="global") {
+    StatePopulation=WorldPopulation$Population[which(WorldPopulation$Country==State)]
+    StateRow=which(WorldArea$Country==State)
+    if (identical(StateRow, integer(0))==T) StateArea=1 else StateArea = WorldArea$areasqm[StateRow]
   } else {
-    StateArea = USArea$landsqm[StateRow]
+    StatePopulation=USPopulation$Population[which(USPopulation$State==State)]
+    StateRow=which(USArea$State==State)
+    if (identical(StateRow, integer(0))==T) StateArea=1 else StateArea = USArea$landsqm[StateRow]
   }
   PopulationDensity=StatePopulation/StateArea
   PopulationDensityFmt=formatC(PopulationDensity, format="f", big.mark=",", digits=2)

@@ -11,10 +11,10 @@ getRange=function(dfd, StartDate="", EndDate="") { # Use format year-month-day
   # Determine columns for the starting and ending states + error handling
   # All columns in DatesFmtd are off by 1, because column 1 is reserved for State
   StartCol = which(DatesFmtd==StartDate) + 1
-  if (length(StartCol)==0) StartCol=2                  # check if error, default to start column
+  if (length(StartCol)==0) StartCol=2                      # check if error, default to start column
   EndCol   = which(DatesFmtd==EndDate  ) + 1
-  if (length(EndCol  )==0) EndCol  = length(DatesFmtd) # check if error, default to end column
+  if (length(EndCol  )==0) EndCol  = length(DatesFmtd) + 1 # check if error, default to end column
 
   # Return a data frame with just the starting and ending dates
-  dft=data.frame(State=dfd$State,dfd[,StartCol:EndCol])
+  dft=data.frame(State   = dfd$State  , dfd[,StartCol:EndCol])
 }

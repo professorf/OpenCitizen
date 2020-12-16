@@ -1,3 +1,4 @@
+library("devtools")
 WorldPopulation=read.csv("data-raw/jhu-worldpop.csv")
 USArea=read.csv("data-raw/census-state-area.csv")
 G20=read.csv("data-raw/G20.csv")

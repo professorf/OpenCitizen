@@ -1,22 +1,22 @@
-plotState = function (dfd, State, DataType, dfa=NULL, Region="US") {
+plotCountry = function (dfd, Country, DataType, dfa=NULL) {
   #
-  # TWO CASES. Plot 1 state & Plot multiple states
+  # TWO CASES. Plot 1 country & Plot multiple countries
   #
 
-  # CASE: Plot 1 State
-  if (length(State)==1) {
-    StateInfo=summarizeState(dfd, State, Region)
-    XBarPlot=barplot(StateInfo$StateVals,ylim=c(0, StateInfo$MaxDayVal), col="#CCCCCC", bor="white", xlab="Date", ylab=sprintf("# %s",DataType))
-    StateInfo[["XBarPlot"]]=XBarPlot # Add xvalues to list of return values
+  # CASE: Plot 1 Country
+  if (length(Country)==1) {
+    CountryInfo=summarizeCountry(dfd, Country)
+    XBarPlot=barplot(CountryInfo$CountryVals,ylim=c(0, CountryInfo$MaxDayVal), col="#CCCCCC", bor="white", xlab="Date", ylab=sprintf("# %s",DataType))
+    CountryInfo[["XBarPlot"]]=XBarPlot # Add xvalues to list of return values
     Colors=RColorBrewer::brewer.pal(8, "Dark2")
     #
     # 7-day moving average
     #
-    Avg7=sapply(7:length(StateInfo$StateVals), function(i) { mean(StateInfo$StateVals[(i-6):i])})
-    lines(XBarPlot[7:length(StateInfo$StateVals)], Avg7, col=Colors[1])
+    Avg7=sapply(7:length(CountryInfo$CountryVals), function(i) { mean(CountryInfo$CountryVals[(i-6):i])})
+    lines(XBarPlot[7:length(CountryInfo$CountryVals)], Avg7, col=Colors[1])
     # 4-day centered moving average
-    #Avg4=sapply(4:(length(StateVals)-3), function(i) { mean(StateVals[(i-3):(i+3)])})
-    #lines(XBarPlot[4:(length(StateVals)-3)], Avg4, col=Colors[1])
+    #Avg4=sapply(4:(length(CountryVals)-3), function(i) { mean(CountryVals[(i-3):(i+3)])})
+    #lines(XBarPlot[4:(length(CountryVals)-3)], Avg4, col=Colors[1])
 
     #
     # Do any annotations
@@ -25,11 +25,11 @@ plotState = function (dfd, State, DataType, dfa=NULL, Region="US") {
       Dates=as.Date(names(dfd[2:length(names(dfd))]), format="X%m.%d.%y")
       AnnotateDate  = dfa$AnnotateDate
       AnnotateLabel = dfa$AnnotateLabel
-      YVal=StateInfo$MaxDayVal
+      YVal=CountryInfo$MaxDayVal
       XDat=sapply(AnnotateDate, function(x) { which(Dates==x) })
       for (i in 1:length(XDat)) {
         if (length(XDat[i])!=0) {
-          XVal=StateInfo$XBarPlot[as.numeric(XDat[i])]
+          XVal=CountryInfo$XBarPlot[as.numeric(XDat[i])]
           lines(c(XVal, XVal), c(0,YVal), col="pink", lty=3)
           text(XVal, YVal, AnnotateLabel[i], pos=1, col="gray") # 1 is below
         }
@@ -38,37 +38,36 @@ plotState = function (dfd, State, DataType, dfa=NULL, Region="US") {
     #
     # Title graph
     #
-    LastVal=StateInfo$LastVal
-    LastDate=StateInfo$LastDate
-    MaxDayVal=StateInfo$MaxDayVal
-    MaxDate=StateInfo$MaxDate
+    LastVal=CountryInfo$LastVal
+    LastDate=CountryInfo$LastDate
+    MaxDayVal=CountryInfo$MaxDayVal
+    MaxDate=CountryInfo$MaxDate
     LastValFmt=formatC(LastVal, format="f", digits=0, big.mark=",")
     MaxDayValFmt=formatC(MaxDayVal, format="f", digits=0, big.mark=",")
-    StatePopulation=StateInfo$StatePopulation
-    StatePopulationFmt=formatC(StatePopulation, format="f", big.mark = ",", digits=0)
-    StateRow=which(USArea$State==State)
-    StateArea = StateInfo$StateArea
-    StateAreaFmt=formatC(StateArea, format="f", big.mark=",", digits=0)
-    PopulationDensity=StateInfo$PopulationDensity
+    CountryPopulation=CountryInfo$CountryPopulation
+    CountryPopulationFmt=formatC(CountryPopulation, format="f", big.mark = ",", digits=0)
+    CountryArea = CountryInfo$CountryArea
+    CountryAreaFmt=formatC(CountryArea, format="f", big.mark=",", digits=0)
+    PopulationDensity=CountryInfo$PopulationDensity
     PopulationDensityFmt=formatC(PopulationDensity, format="f", big.mark=",", digits=2)
-    Total=StateInfo$Total
+    Total=CountryInfo$Total
     TotalFmt=formatC(Total, format="f", big.mark=",", digits=0)
-    OverallPerMillion=StateInfo$OverallPerMillion
+    OverallPerMillion=CountryInfo$OverallPerMillion
     OverallPerMillionFmt=formatC(OverallPerMillion, format="f", big.mark=",", digits=2)
-    LastValPerMillion=StateInfo$LastValPerMillion
-    title(sprintf("%s - COVID-19 DAILY %s (Total): %s on %s (%s)\nPop: %s; Area: %s sq-miles; Peak: %s on %s\nPopulation Density: %s; Total per Million: %s", State, toupper(DataType), LastValFmt, LastDate, TotalFmt, StatePopulationFmt, StateAreaFmt, MaxDayValFmt, MaxDate, PopulationDensityFmt, OverallPerMillionFmt))
+    LastValPerMillion=CountryInfo$LastValPerMillion
+    title(sprintf("%s - COVID-19 DAILY %s (Total): %s on %s (%s)\nPop: %s; Area: %s sq-miles; Peak: %s on %s\nPopulation Density: %s; Total per Million: %s", Country, toupper(DataType), LastValFmt, LastDate, TotalFmt, CountryPopulationFmt, CountryAreaFmt, MaxDayValFmt, MaxDate, PopulationDensityFmt, OverallPerMillionFmt))
 
-    StateInfo
+    CountryInfo
   } else {
-  # CASE: Plot Multiple States (State contains a vector of states)
-    MultipleStates=State   # Redefine variable for readability
-    StateRows=sapply(MultipleStates, function (x) {which(dfd$State==x)})
-    dfm = dfd[StateRows, ] # Multiple State data frame (dfm)
+  # CASE: Plot Multiple Countries (Country contains a vector of countries)
+    MultipleCountries=Country   # Redefine variable for readability
+    CountryRows=sapply(MultipleCountries, function (x) {which(dfd$Country==x)})
+    dfm = dfd[CountryRows, ] # Multiple Country data frame (dfm)
 
     #
     # Put in a matrix
     #
-    ValueMatrix=dfm[1:length(dfm$State), 2:length(dfm)] # Was matx
+    ValueMatrix=dfm[1:length(dfm$Country), 2:length(dfm)] # Was matx
     DateLabels=gsub("[.]","/", gsub("X", "", names(dfm)[2:length(dfm)]))
     #
     # Get Populations & plot
@@ -88,14 +87,14 @@ plotState = function (dfd, State, DataType, dfa=NULL, Region="US") {
       LiteColor=sprintf("#%x%x%x", R, G, B)
       # Plot
       if (i==1) {
-        plot(as.numeric(ValueMatrix[i,]) , typ="p", col=LiteColor, xaxt="n", main=sprintf("COVID-19 Daily %s: %s", toupper(DataType), paste(MultipleStates, collapse="; ")), xlab=sprintf("Days (0 = %s; Current Day:%s = %s)", Day1, length(colnames(ValueMatrix)), DayN), ylab=DataType, ylim=c(0,MaxValue),lwd=3)
+        plot(as.numeric(ValueMatrix[i,]) , typ="p", col=LiteColor, xaxt="n", main=sprintf("COVID-19 Daily %s: %s", toupper(DataType), paste(MultipleCountries, collapse="; ")), xlab=sprintf("Days (0 = %s; Current Day:%s = %s)", Day1, length(colnames(ValueMatrix)), DayN), ylab=DataType, ylim=c(0,MaxValue),lwd=3)
         axis(1, at=1:length(ValueMatrix), las=2, labels=DateLabels, cex.axis=0.5)
       } else
         lines(as.numeric(ValueMatrix[i,]), typ="p", col=LiteColor, lwd=3)
       Avg7=sapply(7:length(ValueMatrix[i,]), function(x) { mean(as.numeric(ValueMatrix[i, (x-6):x]))})
       lines(7:length(ValueMatrix[i,]), Avg7, lwd=3, col=Color)
     }
-    legend(0, MaxValue-1, legend=MultipleStates, col=Palette[1:nrow(ValueMatrix)], lty=1, lwd=3)
+    legend(0, MaxValue-1, legend=MultipleCountries, col=Palette[1:nrow(ValueMatrix)], lty=1, lwd=3)
     #
     # Do any annotations
     #
@@ -114,18 +113,18 @@ plotState = function (dfd, State, DataType, dfa=NULL, Region="US") {
     }
 
     # PER MILLION CODE — STILL TO BE REFACTORED
-    #popu=sapply(rownames(ValueMatrix), function(state) {dfp$Population[which(dfp$State==state)]})
+    #popu=sapply(rownames(ValueMatrix), function(state) {dfp$Population[which(dfp$Country==state)]})
     #maty=ValueMatrix/popu*1000000
     #maxy=max(maty)
     #Day1=gsub("[.]","/",gsub("X","", colnames(maty)[1]))
     #DayN=gsub("[.]","/",gsub("X","", colnames(maty)[length(colnames(maty))]))
     #for (i in 1:nrow(maty)) {
     #  if (i==1)
-    #    plot(maty[i,],typ="l", col=Color, main=sprintf("COVID-19 Daily %s: %s", toupper(DataType), paste(MultipleStates, collapse="; ")), xlab=sprintf("Days (0 = %s; Current Day:%s = %s)", Day1, length(colnames(maty)), DayN), ylab=sprintf("%s (per million)",DataType), ylim=c(0,maxy),lwd=3)
+    #    plot(maty[i,],typ="l", col=Color, main=sprintf("COVID-19 Daily %s: %s", toupper(DataType), paste(MultipleCountries, collapse="; ")), xlab=sprintf("Days (0 = %s; Current Day:%s = %s)", Day1, length(colnames(maty)), DayN), ylab=sprintf("%s (per million)",DataType), ylim=c(0,maxy),lwd=3)
     #  else
     #    lines(maty[i,], col=Color, lwd=3)
     #
     #}
-    #legend(0, maxy-1, legend=MultipleStates, col=Palette[1:nrow(maty)], lty=1, lwd=3)
+    #legend(0, maxy-1, legend=MultipleCountries, col=Palette[1:nrow(maty)], lty=1, lwd=3)
   }
 }
