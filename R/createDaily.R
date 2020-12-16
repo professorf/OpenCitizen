@@ -1,7 +1,7 @@
 #
 # Create a data frame of daily differences (dfd) based on df's daily running totals
 #
-createUSDiffs=function(df) {
+createDaily=function(df) {
   NumCols = length(colnames(df)) # This is 1 + #dates
   NumRows = length(df$State)     # This is the number of states
   Deltas  = sapply(1:NumRows, function (row) {                               # for each state
@@ -11,5 +11,5 @@ createUSDiffs=function(df) {
   colnames(Deltas)=colnames(df)[3:NumCols]
   States  = unique(df$State)
   dfd=data.frame(State=States,Deltas)   # dfd: data frame of daily differences
-  dfd
+  dfd                                   # Return a data frame of daily (dfd) values
 }

@@ -1,4 +1,4 @@
-plotState = function (dfd, State, DataType, dfa=NULL, Region="US") {
+plotState = function (dfd, State, Region="US", DataType="", dfa=NULL) {
   #
   # TWO CASES. Plot 1 state & Plot multiple states
   #
