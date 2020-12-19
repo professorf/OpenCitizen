@@ -60,6 +60,7 @@ plotState = function (dfd, State, Region="US", DataType="", dfa=NULL, PerMil=F) 
     OverallPerMillionFmt=formatC(OverallPerMillion, format="f", big.mark=",", digits=2)
     LastValPerMillion=StateInfo$LastValPerMillion
     title(sprintf("%s - COVID-19 DAILY %s (Total): %s on %s (%s)\nPop: %s; Area: %s sq-miles; Peak: %s on %s\nPopulation Density: %s; Total per Million: %s", State, toupper(DataType), LastValFmt, LastDate, TotalFmt, StatePopulationFmt, StateAreaFmt, MaxDayValFmt, MaxDate, PopulationDensityFmt, OverallPerMillionFmt))
+    legend("bottomright", "Source: JHU CSSE Dataset", cex=0.67)
 
     StateInfo
   } else {
@@ -109,6 +110,7 @@ plotState = function (dfd, State, Region="US", DataType="", dfa=NULL, PerMil=F) 
       lines(7:length(ValueMatrix[i,]), Avg7, lwd=3, col=Color)
     }
     legend(0, MaxValue-1, legend=MultipleStates, col=Palette[1:nrow(ValueMatrix)], lty=1, lwd=3)
+    legend("bottomright", "Source: JHU CSSE Dataset", cex=0.67)
     #
     # Do any annotations
     #
