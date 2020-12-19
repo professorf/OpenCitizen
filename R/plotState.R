@@ -69,9 +69,13 @@ plotState = function (dfd, State, Region="US", DataType="", dfa=NULL, PerMil=F) 
     StateRows=sapply(MultipleStates, function (x) {which(dfd$State==x)})
     dfm = dfd[StateRows, ] # Multiple State data frame (dfm)
 
-    StatePopRows=sapply(MultipleStates, function (x) {which(USPopulation$State==x)})
-    StatePopulations=USPopulation$Population[StatePopRows]
-
+    if (Region=="US") {
+      StatePopRows=sapply(MultipleStates, function (x) {which(USPopulation$State     ==x)})
+      StatePopulations=USPopulation$Population[StatePopRows]
+    } else {
+      StatePopRows=sapply(MultipleStates, function (x) {which(WorldPopulation$Country==x)})
+      StatePopulations=WorldPopulation$Population[StatePopRows]
+    }
     #
     # Put in a matrix
     #
