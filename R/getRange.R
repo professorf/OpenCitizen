@@ -16,5 +16,7 @@ getRange=function(dfd, StartDate="", EndDate="") { # Use format year-month-day
   if (length(EndCol  )==0) EndCol  = length(DatesFmtd) + 1 # check if error, default to end column
 
   # Return a data frame with just the starting and ending dates
-  dft=data.frame(State   = dfd$State  , dfd[,StartCol:EndCol])
+  dft=data.frame(State=dfd$State, dfd[,StartCol:EndCol])
+  if (StartCol==EndCol) names(dft)[2]=names(dfd)[StartCol] # Fix column naming bug if 1 col
+  return (dft)
 }
