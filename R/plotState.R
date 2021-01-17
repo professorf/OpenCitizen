@@ -71,7 +71,10 @@ plotState = function (dfd, State, Region="US", DataType="", dfa=NULL, PerMil=F) 
 
     if (Region=="US") {
       StatePopRows=sapply(MultipleStates, function (x) {which(USPopulation$State     ==x)})
-      StatePopulations=USPopulation$Population[StatePopRows]
+      StatePopulations=sapply(StatePopRows, function(x) {
+        if (length(x)==0) 1 else USPopulation$Population[x] # Handle unknown populations
+      })
+      #StatePopulations=USPopulation$Population[StatePopRows]
     } else {
       StatePopRows=sapply(MultipleStates, function (x) {which(WorldPopulation$Country==x)})
       StatePopulations=WorldPopulation$Population[StatePopRows]
